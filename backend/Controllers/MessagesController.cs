@@ -99,7 +99,7 @@ public class MessagesController : ControllerBase
         client.Timeout = TimeSpan.FromSeconds(60); // Model yavaş olabilir
         
         // Environment variable'dan AI servisi URL'ini al
-        var apiUrl = _configuration["HuggingFaceUrl"] ?? "http://127.0.0.1:7861/analyze";
+        var apiUrl = _configuration["HuggingFaceUrl"] ?? "https://yavuzsemrem-turkish-emotion-analysis.hf.space/api/predict";
         
         try
         {

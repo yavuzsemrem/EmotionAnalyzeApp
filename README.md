@@ -106,10 +106,6 @@ EmotionAnalyzeApp/
 2. **API'yi Test Et:** [https://emotion-analyze-api.onrender.com/swagger](https://emotion-analyze-api.onrender.com/swagger)
 3. **Mobile APK:** GitHub Releases'den indir ve Android'de çalıştır
 
-### 📱 Local Geliştirme (Opsiyonel)
-
-Eğer local olarak geliştirmek istersen, detaylı kurulum talimatları için: **[CALISTIRMA_TALIMATLARI.md](./CALISTIRMA_TALIMATLARI.md)** dosyasına bakın.
-
 ## 🎯 Kullanım
 
 ### Web Uygulaması (Canlı Demo)

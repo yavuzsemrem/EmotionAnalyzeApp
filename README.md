@@ -96,69 +96,40 @@ EmotionAnalyzeApp/
 └── CALISTIRMA_TALIMATLARI.md   # Detaylı kurulum
 ```
 
-## 🚀 Hızlı Başlangıç
+## 🚀 Canlı Demo (Production)
 
-### Gereksinimler
-- Python 3.8+
-- .NET 9.0 SDK
-- Node.js 18+
-- npm veya yarn
-
-### Kurulum
-
-Detaylı kurulum talimatları için: **[CALISTIRMA_TALIMATLARI.md](./CALISTIRMA_TALIMATLARI.md)** dosyasına bakın.
+### ✅ Çalışır Demo Linkleri
 
 #### Kısa Özet:
 
-1. **AI Servisini Başlat**
-   ```bash
-   cd ai-service
-   pip install -r requirements.txt
-   python app.py
-   ```
-   → http://127.0.0.1:7860
+1. **Web Chat'i Test Et:** [https://emotion-analyze-app.vercel.app](https://emotion-analyze-app.vercel.app)
+2. **API'yi Test Et:** [https://emotion-analyze-api.onrender.com/swagger](https://emotion-analyze-api.onrender.com/swagger)
+3. **Mobile APK:** GitHub Releases'den indir ve Android'de çalıştır
 
-2. **Backend'i Başlat**
-   ```bash
-   cd backend
-   dotnet restore
-   dotnet run
-   ```
-   → http://localhost:5000
+### 📱 Local Geliştirme (Opsiyonel)
 
-3. **Frontend'i Başlat (Web)**
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
-   → http://localhost:5173
-
-4. **Mobile App'i Başlat (Opsiyonel)**
-   ```bash
-   cd mobile
-   npm install
-   npm run android  # veya npm run ios (macOS)
-   ```
-   → Android Emulator veya iOS Simulator
+Eğer local olarak geliştirmek istersen, detaylı kurulum talimatları için: **[CALISTIRMA_TALIMATLARI.md](./CALISTIRMA_TALIMATLARI.md)** dosyasına bakın.
 
 ## 🎯 Kullanım
 
-### Web Uygulaması
-1. Tarayıcıda `http://localhost:5173` adresini açın
+### Web Uygulaması (Canlı Demo)
+1. Tarayıcıda [https://emotion-analyze-app.vercel.app](https://emotion-analyze-app.vercel.app) adresini açın
 2. Bir rumuz (nickname) girin
 3. "Sohbete Katıl" butonuna tıklayın
 4. Mesaj yazın ve gönder butonuna basın
 5. Mesajınızın duygu analizi otomatik olarak yapılacak ve gösterilecek
 
-### Mobil Uygulama (React Native CLI)
-1. Backend ve AI servisinin çalıştığından emin olun
-2. `mobile/src/services/api.ts` dosyasında API URL'ini ayarlayın
-3. Android Emulator veya iOS Simulator'da uygulamayı açın
+### Mobil Uygulama (APK)
+1. GitHub Releases'den APK'yı indirin
+2. Android cihazınıza kurun
+3. Uygulamayı açın
 4. Rumuz girin ve sohbete katılın
 5. Web uygulamasıyla aynı özelliklere sahiptir
 
-Detaylı mobil kurulum için: **[mobile/README.md](./mobile/README.md)**
+### API Test (Swagger)
+1. [https://emotion-analyze-api.onrender.com/swagger](https://emotion-analyze-api.onrender.com/swagger) adresini açın
+2. API endpoint'lerini test edin
+3. Kullanıcı oluşturun ve mesaj gönderin
 
 ### Örnek Mesajlar
 
@@ -195,7 +166,7 @@ B -->|Göster| A
 - `GET /api/messages` - Tüm mesajları listele
 - `GET /api/messages/{id}` - Mesaj detayı
 
-Swagger dokümantasyonu: http://localhost:5000/swagger
+Swagger dokümantasyonu: https://emotion-analyze-api.onrender.com/swagger
 
 ## 🤖 AI Araçları Kullanımı
 
@@ -438,7 +409,7 @@ Detaylı deployment adımları için ayrı dokümantasyon hazırlanabilir.
 ### API Test
 Swagger UI kullanarak endpoint'leri test edebilirsiniz:
 ```
-http://localhost:5000/swagger
+https://emotion-analyze-api.onrender.com/swagger
 ```
 
 ## 📝 Lisans

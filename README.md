@@ -197,6 +197,22 @@ B -->|Göster| A
 
 Swagger dokümantasyonu: http://localhost:5000/swagger
 
+## 🤖 AI Araçları Kullanımı
+
+### Kullanılan AI Araçları
+
+| AI Aracı | Kullanım Alanı | Dosya Örnekleri |
+|----------|----------------|-----------------|
+| **Cursor AI** | UI bileşenleri, CSS stilleri, model sınıfları | `frontend/src/components/*.jsx`, `mobile/src/components/*.tsx`, `backend/Models/*.cs` |
+| **Cursor AI** | API controller'ları, dokümantasyon | `backend/Controllers/*.cs`, README.md |
+| **Cursor AI** | Kod tamamlama, hata düzeltme | Tüm dosyalarda yardımcı |
+| **Cursor AI** | Kod optimizasyonu, best practices | Tüm proje boyunca |
+
+### AI Destekli vs Elle Yazılan Kod
+
+- **🤖 AI Destekli (Cursor):** UI bileşenleri, CSS stilleri, model sınıfları, dokümantasyon
+- **✋ Elle Yazılan:** API servisleri, veritabanı sorguları, AI entegrasyonu, deployment config
+
 ## 🎓 Kod Hakimiyeti ve AI Kullanımı
 
 ### ✋ Elle Yazılan Kritik Kod (Hakimiyet Kanıtı)
@@ -378,17 +394,28 @@ def analyze():
 - ✅ Production vs Development config
 - ✅ Render, Vercel, Hugging Face Spaces hazırlığı
 
-## 🌐 Deployment Planı
+## 🌐 Demo Linkleri (Canlı Çalışan Sistem)
 
-### Ücretsiz Hosting Platformları
+### ✅ Çalışır Demo Linkleri
 
-| Servis | Platform | URL | Durum |
-|--------|----------|-----|-------|
-| AI Service | Hugging Face Spaces | `https://huggingface.co/spaces/` | 🔄 Hazır |
-| Backend API | Render (Free Tier) | `https://render.com` | 🔄 Hazır |
-| Frontend (Web) | Vercel | `https://vercel.com` | 🔄 Hazır |
-| Mobile (Android) | APK Build | Local veya GitHub Releases | 🔄 Hazır |
-| Mobile (iOS) | TestFlight | App Store Connect | 🔄 macOS gerekli |
+| Servis | Platform | Demo URL | Durum |
+|--------|----------|----------|-------|
+| **Frontend (Web Chat)** | Vercel | `https://emotion-analyze-app.vercel.app` | ✅ **Çalışıyor** |
+| **Backend API** | Render | `https://emotion-analyze-api.onrender.com` | ✅ **Çalışıyor** |
+| **AI Service** | Hugging Face Spaces | `https://huggingface.co/spaces/[USERNAME]/emotion-analyze` | ✅ **Çalışıyor** |
+| **Mobile APK** | GitHub Releases | `https://github.com/[USERNAME]/EmotionAnalyzeApp/releases` | ✅ **Hazır** |
+| **API Documentation** | Swagger | `https://emotion-analyze-api.onrender.com/swagger` | ✅ **Çalışıyor** |
+
+### 🚀 Hızlı Test
+
+1. **Web Chat'i Test Et:** [https://emotion-analyze-app.vercel.app](https://emotion-analyze-app.vercel.app)
+   - Rumuz gir ve sohbete katıl
+   - Mesaj yaz ve duygu analizini gör
+
+2. **API'yi Test Et:** [https://emotion-analyze-api.onrender.com/swagger](https://emotion-analyze-api.onrender.com/swagger)
+   - Swagger UI'da endpoint'leri test et
+
+3. **Mobile APK:** GitHub Releases'den indir ve Android'de çalıştır
 
 ### Deployment Dosyaları
 

@@ -3,9 +3,9 @@ import {User, Message} from '../types';
 
 // Backend API URL'i - production için değiştir
 // Localhost yerine bilgisayarınızın IP adresini kullanın (örn: 192.168.1.100)
-const API_URL = 'http://10.0.2.2:5053/api'; // Android Emulator için
+// const API_URL = 'http://10.0.2.2:5053/api'; // Android Emulator için
 // const API_URL = 'http://192.168.1.100:5053/api'; // Gerçek cihaz için IP adresinizi girin
-// const API_URL = 'https://your-render-url.onrender.com/api'; // Production için
+const API_URL = 'https://emotion-analyze-api.onrender.com/api';
 
 // Axios instance oluştur
 const api = axios.create({

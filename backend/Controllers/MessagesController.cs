@@ -95,26 +95,37 @@ public class MessagesController : ControllerBase
 
     private async Task<EmotionScores> AnalyzeEmotion(string text)
     {
-        // Geçici: AI servisi API desteklemiyor, basit kelime analizi yap
+        // Geçici: AI servisi API desteklemiyor, geliştirilmiş kelime analizi yap
         Console.WriteLine($"[INFO] 🤖 Geçici AI servisi (kelime analizi): {text}");
         
-        // Türkçe duygu kelimeleri
+        // Türkçe duygu kelimeleri - daha kapsamlı
         var positiveWords = new[] { 
             "iyi", "güzel", "harika", "mükemmel", "mutlu", "neşeli", "sevinçli",
-            "hoş", "memnun", "başarılı", "başarı", "süper", "müthiş", "pozitif"
+            "hoş", "memnun", "başarılı", "başarı", "süper", "müthiş", "pozitif",
+            "iyiyim", "iyiyiz", "iyiler", "güzeller", "harikalar", "mükemmeller",
+            "mutluyum", "mutluyuz", "mutlular", "neşeliyim", "neşeliyiz", "neşeliler",
+            "sevindim", "sevindik", "sevindiler", "hoşum", "hoşuz", "hoşlar",
+            "memnunum", "memnunuz", "memnunlar", "başarılıyım", "başarılıyız", "başarılılar"
         };
         
         var negativeWords = new[] { 
             "kötü", "üzgün", "kızgın", "sinirli", "berbat", "fena", "üzücü",
-            "acı", "hüzünlü", "mutsuz", "öfke", "hüzün", "kötü", "berbat"
+            "acı", "hüzünlü", "mutsuz", "öfke", "hüzün", "kötüyüm", "kötüyüz", "kötüler",
+            "üzgünüm", "üzgünüz", "üzgünler", "kızgınım", "kızgınız", "kızgınlar",
+            "sinirliyim", "sinirliyiz", "sinirliler", "berbatım", "berbatız", "berbatlar",
+            "fenayım", "fenayız", "fenalar", "üzücüyüm", "üzücüyüz", "üzücüler",
+            "acıyım", "acıyız", "acılar", "hüzünlüyüm", "hüzünlüyüz", "hüzünlüler",
+            "mutsuzum", "mutsuzuz", "mutsuzlar", "öfkeli", "öfkeliyim", "öfkeliyiz", "öfkeliler"
         };
         
         var neutralWords = new[] {
             "nasıl", "nasılsın", "selam", "merhaba", "normal", "ok", "tamam",
-            "anladım", "evet", "hayır", "belki", "muhtemelen", "iyi"
+            "anladım", "evet", "hayır", "belki", "muhtemelen", "nasılsınız",
+            "selamlar", "merhabalar", "normaller", "okay", "tamamlar", "anladık",
+            "evetler", "hayırlar", "belkiler", "muhtemelenler"
         };
         
-        var lowerText = text.ToLower();
+        var lowerText = text.ToLower().Trim();
         
         // Kelime sayılarını hesapla
         var positiveCount = positiveWords.Count(w => lowerText.Contains(w));
@@ -123,30 +134,70 @@ public class MessagesController : ControllerBase
         
         Console.WriteLine($"[DEBUG] Pozitif kelimeler: {positiveCount}, Negatif: {negativeCount}, Nötr: {neutralCount}");
         
-        // Duygu analizi
-        if (positiveCount > negativeCount && positiveCount > neutralCount)
+        // Toplam kelime sayısı
+        var totalWords = positiveCount + negativeCount + neutralCount;
+        
+        // Duygu analizi - daha akıllı algoritma
+        if (totalWords == 0)
         {
-            var scores = new EmotionScores { Pozitif = 0.8, Negatif = 0.1, Nötr = 0.1 };
-            Console.WriteLine($"[SUCCESS] ✅ Pozitif duygu tespit edildi: {text}");
+            // Hiç duygu kelimesi yoksa nötr
+            var scores = new EmotionScores { Pozitif = 0.33, Negatif = 0.33, Nötr = 0.34 };
+            Console.WriteLine($"[INFO] ℹ️ Duygu kelimesi bulunamadı, varsayılan nötr: {text}");
             return scores;
         }
-        else if (negativeCount > positiveCount && negativeCount > neutralCount)
+        
+        // En yüksek skorlu duygu türünü bul
+        var maxCount = Math.Max(positiveCount, Math.Max(negativeCount, neutralCount));
+        
+        if (positiveCount == maxCount && positiveCount > 0)
         {
-            var scores = new EmotionScores { Pozitif = 0.1, Negatif = 0.8, Nötr = 0.1 };
-            Console.WriteLine($"[SUCCESS] ✅ Negatif duygu tespit edildi: {text}");
+            // Pozitif duygu - dinamik skorlama
+            var positiveRatio = (double)positiveCount / totalWords;
+            var positiveScore = Math.Min(0.9, 0.5 + (positiveRatio * 0.4)); // 0.5-0.9 arası
+            var remainingScore = 1.0 - positiveScore;
+            var negativeScore = remainingScore * 0.2; // %20 negatif
+            var neutralScore = remainingScore * 0.8; // %80 nötr
+            
+            var scores = new EmotionScores { 
+                Pozitif = positiveScore, 
+                Negatif = negativeScore, 
+                Nötr = neutralScore 
+            };
+            Console.WriteLine($"[SUCCESS] ✅ Pozitif duygu tespit edildi: {text} (Pozitif: {positiveScore:P0})");
             return scores;
         }
-        else if (neutralCount > 0 || (positiveCount == negativeCount))
+        else if (negativeCount == maxCount && negativeCount > 0)
         {
-            var scores = new EmotionScores { Pozitif = 0.2, Negatif = 0.2, Nötr = 0.6 };
-            Console.WriteLine($"[SUCCESS] ✅ Nötr duygu tespit edildi: {text}");
+            // Negatif duygu - dinamik skorlama
+            var negativeRatio = (double)negativeCount / totalWords;
+            var negativeScore = Math.Min(0.9, 0.5 + (negativeRatio * 0.4)); // 0.5-0.9 arası
+            var remainingScore = 1.0 - negativeScore;
+            var positiveScore = remainingScore * 0.2; // %20 pozitif
+            var neutralScore = remainingScore * 0.8; // %80 nötr
+            
+            var scores = new EmotionScores { 
+                Pozitif = positiveScore, 
+                Negatif = negativeScore, 
+                Nötr = neutralScore 
+            };
+            Console.WriteLine($"[SUCCESS] ✅ Negatif duygu tespit edildi: {text} (Negatif: {negativeScore:P0})");
             return scores;
         }
         else
         {
-            // Varsayılan: nötr
-            var scores = new EmotionScores { Pozitif = 0.33, Negatif = 0.33, Nötr = 0.34 };
-            Console.WriteLine($"[INFO] ℹ️ Varsayılan nötr duygu: {text}");
+            // Nötr duygu - dinamik skorlama
+            var neutralRatio = (double)neutralCount / totalWords;
+            var neutralScore = Math.Min(0.8, 0.4 + (neutralRatio * 0.4)); // 0.4-0.8 arası
+            var remainingScore = 1.0 - neutralScore;
+            var positiveScore = remainingScore * 0.5; // %50 pozitif
+            var negativeScore = remainingScore * 0.5; // %50 negatif
+            
+            var scores = new EmotionScores { 
+                Pozitif = positiveScore, 
+                Negatif = negativeScore, 
+                Nötr = neutralScore 
+            };
+            Console.WriteLine($"[SUCCESS] ✅ Nötr duygu tespit edildi: {text} (Nötr: {neutralScore:P0})");
             return scores;
         }
     }

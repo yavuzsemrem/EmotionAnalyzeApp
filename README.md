@@ -100,11 +100,22 @@ EmotionAnalyzeApp/
 
 ### ✅ Çalışır Demo Linkleri
 
-#### Kısa Özet:
+**Uygulama zaten canlı olarak çalışıyor! Hiçbir kurulum gerekmez.**
 
-1. **Web Chat'i Test Et:** [https://emotion-analyze-app.vercel.app](https://emotion-analyze-app.vercel.app)
-2. **API'yi Test Et:** [https://emotion-analyze-api.onrender.com/swagger](https://emotion-analyze-api.onrender.com/swagger)
-3. **Mobile APK:** GitHub Releases'den indir ve Android'de çalıştır
+| Servis | Platform | Demo URL | Durum |
+|--------|----------|----------|-------|
+| **Frontend (Web Chat)** | Vercel | `https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app` | ✅ **Çalışıyor** |
+| **Backend API** | Render | `https://emotion-analyze-api.onrender.com` | ✅ **Çalışıyor** |
+| **AI Service** | Hugging Face Spaces | `https://huggingface.co/spaces/yavuzsemrem/turkish-emotion-analysis` | ✅ **Çalışıyor** |
+| **Mobile APK** | GitHub Releases | `https://github.com/yavuzsemrem/EmotionAnalyzeApp/releases` | ✅ **Hazır** |
+| **API Documentation** | Swagger | `https://emotion-analyze-api.onrender.com/swagger` | ✅ **Çalışıyor** |
+
+### 🚀 Hızlı Test
+
+1. **Web Chat'i Test Et:** [https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app](https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app)
+2. **AI Service'i Test Et:** [https://huggingface.co/spaces/yavuzsemrem/turkish-emotion-analysis](https://huggingface.co/spaces/yavuzsemrem/turkish-emotion-analysis)
+3. **API'yi Test Et:** [https://emotion-analyze-api.onrender.com/swagger](https://emotion-analyze-api.onrender.com/swagger)
+4. **Mobile APK:** GitHub Releases'den indir ve Android'de çalıştır
 
 ### 📱 Local Geliştirme (Opsiyonel)
 
@@ -113,7 +124,7 @@ Eğer local olarak geliştirmek istersen, detaylı kurulum talimatları için: *
 ## 🎯 Kullanım
 
 ### Web Uygulaması (Canlı Demo)
-1. Tarayıcıda [https://emotion-analyze-app.vercel.app](https://emotion-analyze-app.vercel.app) adresini açın
+1. Tarayıcıda [https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app](https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app) adresini açın
 2. Bir rumuz (nickname) girin
 3. "Sohbete Katıl" butonuna tıklayın
 4. Mesaj yazın ve gönder butonuna basın
@@ -371,22 +382,25 @@ def analyze():
 
 | Servis | Platform | Demo URL | Durum |
 |--------|----------|----------|-------|
-| **Frontend (Web Chat)** | Vercel | `https://emotion-analyze-app.vercel.app` | ✅ **Çalışıyor** |
+| **Frontend (Web Chat)** | Vercel | `https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app` | ✅ **Çalışıyor** |
 | **Backend API** | Render | `https://emotion-analyze-api.onrender.com` | ✅ **Çalışıyor** |
-| **AI Service** | Hugging Face Spaces | `https://huggingface.co/spaces/[USERNAME]/emotion-analyze` | ✅ **Çalışıyor** |
-| **Mobile APK** | GitHub Releases | `https://github.com/[USERNAME]/EmotionAnalyzeApp/releases` | ✅ **Hazır** |
+| **AI Service** | Hugging Face Spaces | `https://huggingface.co/spaces/yavuzsemrem/turkish-emotion-analysis` | ✅ **Çalışıyor** |
+| **Mobile APK** | GitHub Releases | `https://github.com/yavuzsemrem/EmotionAnalyzeApp/releases` | ✅ **Hazır** |
 | **API Documentation** | Swagger | `https://emotion-analyze-api.onrender.com/swagger` | ✅ **Çalışıyor** |
 
 ### 🚀 Hızlı Test
 
-1. **Web Chat'i Test Et:** [https://emotion-analyze-app.vercel.app](https://emotion-analyze-app.vercel.app)
+1. **Web Chat'i Test Et:** [https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app](https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app)
    - Rumuz gir ve sohbete katıl
    - Mesaj yaz ve duygu analizini gör
 
-2. **API'yi Test Et:** [https://emotion-analyze-api.onrender.com/swagger](https://emotion-analyze-api.onrender.com/swagger)
+2. **AI Service'i Test Et:** [https://huggingface.co/spaces/yavuzsemrem/turkish-emotion-analysis](https://huggingface.co/spaces/yavuzsemrem/turkish-emotion-analysis)
+   - Türkçe metin gir ve duygu analizini gör
+
+3. **API'yi Test Et:** [https://emotion-analyze-api.onrender.com/swagger](https://emotion-analyze-api.onrender.com/swagger)
    - Swagger UI'da endpoint'leri test et
 
-3. **Mobile APK:** GitHub Releases'den indir ve Android'de çalıştır
+4. **Mobile APK:** GitHub Releases'den indir ve Android'de çalıştır
 
 ### Deployment Dosyaları
 

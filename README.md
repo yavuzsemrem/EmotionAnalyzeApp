@@ -104,10 +104,6 @@ EmotionAnalyzeApp/
 - Node.js 18+
 - npm veya yarn
 
-### Kurulum
-
-Detaylı kurulum talimatları için: **[CALISTIRMA_TALIMATLARI.md](./CALISTIRMA_TALIMATLARI.md)** dosyasına bakın.
-
 #### Kısa Özet:
 
 1. **AI Servisini Başlat**

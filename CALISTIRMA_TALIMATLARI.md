@@ -4,10 +4,16 @@ Bu doküman, projeyi yerel ortamda çalıştırmak için gereken tüm adımları
 
 ## 📋 Gereksinimler
 
-### Sistem Gereksinimleri
+### Sistem Gereksinimleri (Web Uygulaması)
 - **Python 3.8+** (AI servisi için)
 - **.NET 9.0 SDK** (Backend API için)
 - **Node.js 18+** ve npm (Frontend için)
+
+### Ek Gereksinimler (Mobil Uygulama - Opsiyonel)
+- **JDK 17+** (Android için)
+- **Android Studio** (Android Emulator)
+- **Xcode 14+** (iOS için - sadece macOS)
+- **React Native CLI**: `npm install -g react-native-cli`
 
 ### Kurulum Kontrolü
 Terminalinizde aşağıdaki komutları çalıştırarak kurulumları kontrol edin:
@@ -110,6 +116,47 @@ VITE v7.x.x  ready in XXX ms
 ```
 
 **🎉 Frontend hazır!** Tarayıcınızda `http://localhost:5173` adresini açın.
+
+---
+
+### 4️⃣ Mobil Uygulama (React Native CLI - Opsiyonel)
+
+Yeni bir dördüncü terminal penceresi açın:
+
+#### Windows / macOS / Linux:
+```bash
+# 1. Mobile klasörüne git
+cd mobile
+
+# 2. Bağımlılıkları yükle
+npm install
+
+# 3a. Android için
+npm run android
+# NOT: Android Emulator veya fiziksel cihaz bağlı olmalı
+
+# 3b. iOS için (sadece macOS)
+cd ios
+pod install
+cd ..
+npm run ios
+```
+
+#### Beklenen Çıktı:
+```
+info Launching emulator...
+info Installing the app...
+BUILD SUCCESSFUL
+```
+
+**🎉 Mobil uygulama hazır!** Android Emulator veya iOS Simulator'da uygulama açılacak.
+
+**ÖNEMLİ:** Mobil uygulama için API URL'ini ayarlayın:
+- `mobile/src/services/api.ts` dosyasını açın
+- Android Emulator: `http://10.0.2.2:5053/api`
+- Gerçek cihaz: `http://192.168.1.XXX:5053/api` (IP adresinizi girin)
+
+Detaylı mobil kurulum için: **[mobile/README.md](./mobile/README.md)**
 
 ---
 
@@ -259,6 +306,7 @@ Tüm servisler çalışıyorsa:
 2. ✅ `http://localhost:5000/swagger` - Swagger API dökümantasyonu görünüyor
 3. ✅ `http://localhost:5173` - React chat arayüzü görünüyor
 4. ✅ Mesaj gönderince duygu analizi çalışıyor ve emoji görünüyor
+5. ✅ (Opsiyonel) Mobil uygulama Android/iOS'ta açılıyor ve çalışıyor
 
 ---
 
@@ -267,7 +315,9 @@ Tüm servisler çalışıyorsa:
 - [ ] Hugging Face Spaces'e AI servisini deploy et
 - [ ] Render'a backend'i deploy et
 - [ ] Vercel'e frontend'i deploy et
-- [ ] React Native mobil uygulaması geliştir
+- [x] React Native CLI mobil uygulaması geliştir ✅
+- [ ] Android APK build ve test
+- [ ] iOS build (macOS gerekli)
 
 ---
 

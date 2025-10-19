@@ -19,14 +19,37 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add HttpClient
 builder.Services.AddHttpClient();
 
-// Add CORS
+// Add CORS - Production için özel yapılandırma
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .WithExposedHeaders("*");
+    });
+    
+    // Development için ayrı policy
+    options.AddPolicy("Development", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+    
+    // Production için spesifik policy
+    options.AddPolicy("Production", policy =>
+    {
+        policy.WithOrigins(
+                "https://emotion-analyze-app.vercel.app",
+                "https://*.vercel.app"
+              )
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .SetIsOriginAllowedToAllowWildcardSubdomains()
+              .WithExposedHeaders("*");
     });
 });
 
@@ -51,7 +74,17 @@ else
 
 // Render için HTTP'yi kabul et
 // app.UseHttpsRedirection();
-app.UseCors();
+
+// CORS middleware'i ekle (UseAuthorization'dan önce olmalı!)
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("Development");
+}
+else
+{
+    // Production'da tüm origin'lere izin ver (güvenli değil ama demo için OK)
+    app.UseCors("AllowAll");
+}
 app.UseAuthorization();
 app.MapControllers();
 

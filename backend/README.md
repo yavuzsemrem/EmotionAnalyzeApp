@@ -51,3 +51,4 @@ dotnet run
    - `HuggingFaceUrl`: Hugging Face Space URL'iniz
 4. Build Command: `dotnet publish -c Release -o out`
 5. Start Command: `dotnet out/EmotionAnalyzeApi.dll`
+

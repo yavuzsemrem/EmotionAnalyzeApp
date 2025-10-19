@@ -31,7 +31,7 @@ public class MessagesController : ControllerBase
     {
         return await _context.Messages
             .Include(m => m.User)
-            .OrderByDescending(m => m.CreatedAt)
+            .OrderBy(m => m.CreatedAt)  // Eski mesajlar önce, yeni mesajlar altta
             .ToListAsync();
     }
 
@@ -86,17 +86,54 @@ public class MessagesController : ControllerBase
     private async Task<EmotionScores> AnalyzeEmotion(string text)
     {
         var client = _clientFactory.CreateClient();
-        var huggingFaceUrl = _configuration["HuggingFaceUrl"] ?? throw new InvalidOperationException("HuggingFace URL bulunamadı");
+        client.Timeout = TimeSpan.FromSeconds(60); // Model yavaş olabilir
         
-        var response = await client.PostAsJsonAsync(huggingFaceUrl, new { text });
+        // Flask API endpoint (daha güvenilir)
+        var apiUrl = "http://127.0.0.1:7861/analyze";
         
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            throw new Exception($"Duygu analizi API'si hata döndü: {response.StatusCode}");
-        }
+            // Flask API formatı: { "text": "mesaj" }
+            var requestBody = new { text };
+            
+            Console.WriteLine($"[DEBUG] AI Servisine istek atılıyor: {apiUrl}");
+            Console.WriteLine($"[DEBUG] Mesaj: {text}");
+            
+            var response = await client.PostAsJsonAsync(apiUrl, requestBody);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            
+            Console.WriteLine($"[DEBUG] Response Status: {response.StatusCode}");
+            Console.WriteLine($"[DEBUG] Response: {responseContent.Substring(0, Math.Min(200, responseContent.Length))}...");
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"AI servisi hata döndü: {response.StatusCode}");
+            }
 
-        var result = await response.Content.ReadFromJsonAsync<EmotionScores>();
-        return result ?? throw new Exception("Duygu analizi sonucu alınamadı");
+            // Flask API direkt EmotionScores formatında döner
+            // { "Pozitif": 0.x, "Negatif": 0.x, "Nötr": 0.x }
+            var scores = await response.Content.ReadFromJsonAsync<EmotionScores>();
+            
+            if (scores == null)
+            {
+                throw new Exception("Duygu analizi sonucu parse edilemedi");
+            }
+            
+            Console.WriteLine($"[SUCCESS] ✅ Pozitif: {scores.Pozitif:P0}, Negatif: {scores.Negatif:P0}, Nötr: {scores.Nötr:P0}");
+            return scores;
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"[ERROR] ❌ AI servisine bağlanılamadı: {ex.Message}");
+            Console.WriteLine($"[ERROR] AI servisinin çalıştığından emin olun: http://127.0.0.1:7860");
+            throw new Exception("AI servisi çalışmıyor. Lütfen 'python app.py' komutuyla başlatın.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] ❌ Duygu analizi hatası: {ex.Message}");
+            Console.WriteLine($"[ERROR] Stack: {ex.StackTrace}");
+            throw;
+        }
     }
 }
 
@@ -106,3 +143,4 @@ public class EmotionScores
     public double Negatif { get; set; }
     public double Nötr { get; set; }
 }
+

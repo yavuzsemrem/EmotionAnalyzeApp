@@ -33,7 +33,7 @@ def analyze_emotion(text):
     label = result["label"]
     score = result["score"]
     
-    print(f"Debug - Raw Result: {result}")  # Debug çıktısı
+    print(f"Debug - Raw Result: {result}")
     
     # Çok düşük skor: Kesinlikle nötr
     if score < 0.55:
@@ -95,34 +95,6 @@ def analyze_emotion(text):
             "Nötr": max(0.0, 1.0 - score)
         }
 
-# Test fonksiyonu
-def test_sentiment():
-    test_cases = [
-        "Bu film muhteşemdi!",                    # Çok pozitif
-        "Hiç beğenmedim, çok kötüydü.",          # Çok negatif
-        "Normal bir gündü.",                      # Nötr
-        "Bugün hava güzel.",                      # Hafif pozitif
-        "Biraz yorgunum.",                        # Hafif negatif
-        "Toplantı saat 3'te.",                    # Nötr
-        "Çok mutluyum ve heyecanlıyım!",         # Çok pozitif
-        "Bu durum beni mahvetti.",               # Çok negatif
-        "Şu an işe gidiyorum.",                  # Nötr
-        "Yemek fena değildi."                    # Hafif pozitif
-    ]
-    
-    print("\nTest Sonuçları:")
-    print("-" * 50)
-    for text in test_cases:
-        raw_result = sentiment_pipeline(text)[0]
-        processed_result = analyze_emotion(text)
-        print(f"\nTest Metni: {text}")
-        print(f"Ham Sonuç: {raw_result}")
-        print(f"İşlenmiş Sonuç: {processed_result}")
-        print("-" * 30)
-
-# Başlangıçta test fonksiyonunu çalıştır
-test_sentiment()
-
 # Gradio arayüzü
 interface = gr.Interface(
     fn=analyze_emotion,
@@ -135,66 +107,13 @@ interface = gr.Interface(
     title="Türkçe Duygu Analizi",
     description="Metninizin duygusal tonunu analiz eder (Pozitif/Negatif/Nötr)",
     examples=[
-        ["Bu film muhteşemdi, çok beğendim!"],      # Çok pozitif
-        ["Maalesef hiç beğenmedim, çok kötüydü."],  # Çok negatif
-        ["Bugün normal bir gündü."],                 # Nötr
-        ["Hava güzel görünüyor."],                  # Hafif pozitif
-        ["Biraz yoruldum."],                        # Hafif negatif
-        ["Saat şu an 3."],                          # Nötr
+        ["Bu film muhteşemdi, çok beğendim!"],
+        ["Maalesef hiç beğenmedim, çok kötüydü."],
+        ["Bugün normal bir gündü."],
     ]
 )
 
-# Flask API wrapper (Backend için)
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import threading
-
-flask_app = Flask(__name__)
-CORS(flask_app)  # CORS'u aktif et
-
-@flask_app.route('/analyze', methods=['POST'])
-def analyze():
-    try:
-        data = request.get_json()
-        text = data.get('text', '')
-        
-        if not text:
-            return jsonify({'error': 'Text is required'}), 400
-        
-        # Duygu analizi yap
-        result = analyze_emotion(text)
-        
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# Gradio'yu ayrı thread'de başlat
-def start_gradio():
-    try:
-        interface.launch(server_port=7860, server_name="127.0.0.1", share=False)
-    except OSError:
-        print("⚠️ Port 7860 kullanımda, 7862 portu deneniyor...")
-        interface.launch(server_port=7862, server_name="127.0.0.1", share=False)
-
-# Uygulamayı başlat
+# API modunu aktif et
 if __name__ == "__main__":
-    # Gradio'yu background'da başlat
-    gradio_thread = threading.Thread(target=start_gradio, daemon=True)
-    gradio_thread.start()
-    
-    # Flask API'yi başlat (port 7861)
-    import time
-    time.sleep(2)  # Gradio'nun başlaması için bekle
-    
-    print("\n" + "="*50)
-    print("🎉 AI Servisleri Başlatıldı!")
-    print("="*50)
-    print(f"📊 Gradio UI: http://127.0.0.1:7860 (veya 7862)")
-    print(f"🔌 Flask API: http://127.0.0.1:7861/analyze")
-    print("="*50 + "\n")
-    
-    try:
-        flask_app.run(host='127.0.0.1', port=7861, debug=False)
-    except OSError:
-        print("⚠️ Port 7861 kullanımda, 7863 portu deneniyor...")
-        flask_app.run(host='127.0.0.1', port=7863, debug=False)
+    interface.launch(server_port=7860, server_name="127.0.0.1", share=False)
+

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: emotion-analyze-api
+    env: dotnet
+    buildCommand: dotnet publish -c Release -o out
+    startCommand: cd out && dotnet EmotionAnalyzeApi.dll
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:$PORT
+      - key: HuggingFaceUrl
+        value: https://YOUR-HF-SPACE-NAME.hf.space/api/predict
+        # Yukarıdaki URL'i Hugging Face Space URL'iniz ile değiştirin
+

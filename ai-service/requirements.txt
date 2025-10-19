@@ -1,5 +1,8 @@
-transformers==4.35.0
-torch==2.1.0
-gradio==4.1.1
-numpy==1.26.0
-sentencepiece==0.1.99
+torch
+transformers
+gradio
+protobuf
+accelerate
+flask
+flask-cors
+

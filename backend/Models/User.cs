@@ -9,3 +9,4 @@ public class User
     // Navigation property
     public ICollection<Message> Messages { get; set; } = new List<Message>();
 }
+

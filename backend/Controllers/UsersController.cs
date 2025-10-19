@@ -60,7 +60,8 @@ public class UsersController : ControllerBase
 
         return await _context.Messages
             .Where(m => m.UserId == id)
-            .OrderByDescending(m => m.CreatedAt)
+            .OrderBy(m => m.CreatedAt)  // Eski mesajlar önce, yeni mesajlar altta
             .ToListAsync();
     }
 }
+

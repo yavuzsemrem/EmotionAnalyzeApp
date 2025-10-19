@@ -25,3 +25,4 @@ Servis bir Gradio arayüzü üzerinden çalışır ve aşağıdaki özellikleri 
 ## Model Hakkında
 
 Kullanılan model, Türkçe metinler için özel olarak eğitilmiş BERT tabanlı bir modeldir. Metinleri pozitif, negatif ve nötr olarak sınıflandırır ve her bir kategori için bir güven skoru üretir.
+

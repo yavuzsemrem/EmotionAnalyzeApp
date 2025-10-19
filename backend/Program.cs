@@ -44,6 +44,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "https://emotion-analyze-app.vercel.app",
+                "https://emotion-analyze-qcwihl6ia-s3limms-projects.vercel.app",
                 "https://*.vercel.app"
               )
               .AllowAnyHeader()
@@ -82,8 +83,8 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    // Production'da tüm origin'lere izin ver (güvenli değil ama demo için OK)
-    app.UseCors("AllowAll");
+    // Production'da spesifik Vercel URL'lerine izin ver
+    app.UseCors("Production");
 }
 app.UseAuthorization();
 app.MapControllers();

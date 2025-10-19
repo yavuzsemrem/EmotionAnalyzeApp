@@ -95,85 +95,59 @@ public class MessagesController : ControllerBase
 
     private async Task<EmotionScores> AnalyzeEmotion(string text)
     {
-        var client = _clientFactory.CreateClient();
-        client.Timeout = TimeSpan.FromSeconds(60); // Model yavaş olabilir
+        // Geçici: AI servisi API desteklemiyor, basit kelime analizi yap
+        Console.WriteLine($"[INFO] 🤖 Geçici AI servisi (kelime analizi): {text}");
         
-        // Environment variable'dan AI servisi URL'ini al
-        var apiUrl = _configuration["HuggingFaceUrl"] ?? "https://yavuzsemrem-turkish-emotion-analysis.hf.space/api/predict";
+        // Türkçe duygu kelimeleri
+        var positiveWords = new[] { 
+            "iyi", "güzel", "harika", "mükemmel", "mutlu", "neşeli", "sevinçli",
+            "hoş", "memnun", "başarılı", "başarı", "süper", "müthiş", "pozitif"
+        };
         
-        try
+        var negativeWords = new[] { 
+            "kötü", "üzgün", "kızgın", "sinirli", "berbat", "fena", "üzücü",
+            "acı", "hüzünlü", "mutsuz", "öfke", "hüzün", "kötü", "berbat"
+        };
+        
+        var neutralWords = new[] {
+            "nasıl", "nasılsın", "selam", "merhaba", "normal", "ok", "tamam",
+            "anladım", "evet", "hayır", "belki", "muhtemelen", "iyi"
+        };
+        
+        var lowerText = text.ToLower();
+        
+        // Kelime sayılarını hesapla
+        var positiveCount = positiveWords.Count(w => lowerText.Contains(w));
+        var negativeCount = negativeWords.Count(w => lowerText.Contains(w));
+        var neutralCount = neutralWords.Count(w => lowerText.Contains(w));
+        
+        Console.WriteLine($"[DEBUG] Pozitif kelimeler: {positiveCount}, Negatif: {negativeCount}, Nötr: {neutralCount}");
+        
+        // Duygu analizi
+        if (positiveCount > negativeCount && positiveCount > neutralCount)
         {
-            // Hugging Face Space API formatı: { "data": ["mesaj"] }
-            var requestBody = new { data = new[] { text } };
-            
-            Console.WriteLine($"[DEBUG] AI Servisine istek atılıyor: {apiUrl}");
-            Console.WriteLine($"[DEBUG] Mesaj: {text}");
-            
-            var response = await client.PostAsJsonAsync(apiUrl, requestBody);
-            var responseContent = await response.Content.ReadAsStringAsync();
-            
-            Console.WriteLine($"[DEBUG] Response Status: {response.StatusCode}");
-            Console.WriteLine($"[DEBUG] Response: {responseContent.Substring(0, Math.Min(200, responseContent.Length))}...");
-            
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"AI servisi hata döndü: {response.StatusCode}, İçerik: {responseContent}");
-            }
-
-            // Hugging Face Space API response formatı
-            // { "data": [["pozitif", 0.8, 0.1, 0.1]] }
-            var apiResponse = await response.Content.ReadFromJsonAsync<HuggingFaceResponse>();
-            
-            if (apiResponse?.Data == null || apiResponse.Data.Length == 0)
-            {
-                throw new Exception("Duygu analizi sonucu parse edilemedi");
-            }
-            
-            var result = apiResponse.Data[0];
-            if (result.Length < 4)
-            {
-                throw new Exception("Duygu analizi sonucu eksik");
-            }
-            
-            var emotion = result[0].ToString();
-            var positive = Convert.ToDouble(result[1]);
-            var negative = Convert.ToDouble(result[2]);
-            var neutral = Convert.ToDouble(result[3]);
-            
-            Console.WriteLine($"[SUCCESS] ✅ Duygu: {emotion}, Pozitif: {positive:P0}, Negatif: {negative:P0}, Nötr: {neutral:P0}");
-            
-            return new EmotionScores
-            {
-                Pozitif = positive,
-                Negatif = negative,
-                Nötr = neutral
-            };
+            var scores = new EmotionScores { Pozitif = 0.8, Negatif = 0.1, Nötr = 0.1 };
+            Console.WriteLine($"[SUCCESS] ✅ Pozitif duygu tespit edildi: {text}");
+            return scores;
         }
-        catch (HttpRequestException ex)
+        else if (negativeCount > positiveCount && negativeCount > neutralCount)
         {
-            Console.WriteLine($"[ERROR] ❌ AI servisine bağlanılamadı: {ex.Message}");
-            Console.WriteLine($"[ERROR] AI servisinin çalıştığından emin olun: {apiUrl}");
-            
-            // Hata durumunda neutral döndür
-            return new EmotionScores
-            {
-                Pozitif = 0.33,
-                Negatif = 0.33,
-                Nötr = 0.34
-            };
+            var scores = new EmotionScores { Pozitif = 0.1, Negatif = 0.8, Nötr = 0.1 };
+            Console.WriteLine($"[SUCCESS] ✅ Negatif duygu tespit edildi: {text}");
+            return scores;
         }
-        catch (Exception ex)
+        else if (neutralCount > 0 || (positiveCount == negativeCount))
         {
-            Console.WriteLine($"[ERROR] ❌ Duygu analizi hatası: {ex.Message}");
-            Console.WriteLine($"[ERROR] Stack: {ex.StackTrace}");
-            
-            // Hata durumunda neutral döndür
-            return new EmotionScores
-            {
-                Pozitif = 0.33,
-                Negatif = 0.33,
-                Nötr = 0.34
-            };
+            var scores = new EmotionScores { Pozitif = 0.2, Negatif = 0.2, Nötr = 0.6 };
+            Console.WriteLine($"[SUCCESS] ✅ Nötr duygu tespit edildi: {text}");
+            return scores;
+        }
+        else
+        {
+            // Varsayılan: nötr
+            var scores = new EmotionScores { Pozitif = 0.33, Negatif = 0.33, Nötr = 0.34 };
+            Console.WriteLine($"[INFO] ℹ️ Varsayılan nötr duygu: {text}");
+            return scores;
         }
     }
 }

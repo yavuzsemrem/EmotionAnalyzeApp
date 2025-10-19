@@ -79,7 +79,17 @@ public class MessagesController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"Duygu analizi sırasında bir hata oluştu: {ex.Message}");
+            // Duygu analizi başarısız olsa bile mesajı kaydet
+            Console.WriteLine($"[WARNING] ⚠️ Duygu analizi başarısız, mesaj neutral olarak kaydediliyor: {ex.Message}");
+            
+            message.PositiveScore = 0.33;
+            message.NegativeScore = 0.33;
+            message.NeutralScore = 0.34;
+            
+            _context.Messages.Add(message);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetMessage), new { id = message.Id }, message);
         }
     }
 
@@ -88,13 +98,13 @@ public class MessagesController : ControllerBase
         var client = _clientFactory.CreateClient();
         client.Timeout = TimeSpan.FromSeconds(60); // Model yavaş olabilir
         
-        // Flask API endpoint (daha güvenilir)
-        var apiUrl = "http://127.0.0.1:7861/analyze";
+        // Environment variable'dan AI servisi URL'ini al
+        var apiUrl = _configuration["HuggingFaceUrl"] ?? "http://127.0.0.1:7861/analyze";
         
         try
         {
-            // Flask API formatı: { "text": "mesaj" }
-            var requestBody = new { text };
+            // Hugging Face Space API formatı: { "data": ["mesaj"] }
+            var requestBody = new { data = new[] { text } };
             
             Console.WriteLine($"[DEBUG] AI Servisine istek atılıyor: {apiUrl}");
             Console.WriteLine($"[DEBUG] Mesaj: {text}");
@@ -107,32 +117,63 @@ public class MessagesController : ControllerBase
             
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"AI servisi hata döndü: {response.StatusCode}");
+                throw new Exception($"AI servisi hata döndü: {response.StatusCode}, İçerik: {responseContent}");
             }
 
-            // Flask API direkt EmotionScores formatında döner
-            // { "Pozitif": 0.x, "Negatif": 0.x, "Nötr": 0.x }
-            var scores = await response.Content.ReadFromJsonAsync<EmotionScores>();
+            // Hugging Face Space API response formatı
+            // { "data": [["pozitif", 0.8, 0.1, 0.1]] }
+            var apiResponse = await response.Content.ReadFromJsonAsync<HuggingFaceResponse>();
             
-            if (scores == null)
+            if (apiResponse?.Data == null || apiResponse.Data.Length == 0)
             {
                 throw new Exception("Duygu analizi sonucu parse edilemedi");
             }
             
-            Console.WriteLine($"[SUCCESS] ✅ Pozitif: {scores.Pozitif:P0}, Negatif: {scores.Negatif:P0}, Nötr: {scores.Nötr:P0}");
-            return scores;
+            var result = apiResponse.Data[0];
+            if (result.Length < 4)
+            {
+                throw new Exception("Duygu analizi sonucu eksik");
+            }
+            
+            var emotion = result[0].ToString();
+            var positive = Convert.ToDouble(result[1]);
+            var negative = Convert.ToDouble(result[2]);
+            var neutral = Convert.ToDouble(result[3]);
+            
+            Console.WriteLine($"[SUCCESS] ✅ Duygu: {emotion}, Pozitif: {positive:P0}, Negatif: {negative:P0}, Nötr: {neutral:P0}");
+            
+            return new EmotionScores
+            {
+                Pozitif = positive,
+                Negatif = negative,
+                Nötr = neutral
+            };
         }
         catch (HttpRequestException ex)
         {
             Console.WriteLine($"[ERROR] ❌ AI servisine bağlanılamadı: {ex.Message}");
-            Console.WriteLine($"[ERROR] AI servisinin çalıştığından emin olun: http://127.0.0.1:7860");
-            throw new Exception("AI servisi çalışmıyor. Lütfen 'python app.py' komutuyla başlatın.");
+            Console.WriteLine($"[ERROR] AI servisinin çalıştığından emin olun: {apiUrl}");
+            
+            // Hata durumunda neutral döndür
+            return new EmotionScores
+            {
+                Pozitif = 0.33,
+                Negatif = 0.33,
+                Nötr = 0.34
+            };
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[ERROR] ❌ Duygu analizi hatası: {ex.Message}");
             Console.WriteLine($"[ERROR] Stack: {ex.StackTrace}");
-            throw;
+            
+            // Hata durumunda neutral döndür
+            return new EmotionScores
+            {
+                Pozitif = 0.33,
+                Negatif = 0.33,
+                Nötr = 0.34
+            };
         }
     }
 }
@@ -142,5 +183,10 @@ public class EmotionScores
     public double Pozitif { get; set; }
     public double Negatif { get; set; }
     public double Nötr { get; set; }
+}
+
+public class HuggingFaceResponse
+{
+    public object[][] Data { get; set; }
 }
 
